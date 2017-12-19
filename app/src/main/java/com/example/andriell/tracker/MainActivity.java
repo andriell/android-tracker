@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
             bound = false;
         }
     };
+
+    public void onClickReset(View view) {
+        if (trackerService == null) {
+            return;
+        }
+        trackerService.setDistance(0d);
+    }
 
     private void watchMileage() {
         final TextView distanceView = (TextView)findViewById(R.id.distance);

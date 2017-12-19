@@ -40,6 +40,10 @@ public class TrackerService extends Service {
         return distance;
     }
 
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
     public class TrackerBinder extends Binder {
         TrackerService getTrackerService() {
             return TrackerService.this;
