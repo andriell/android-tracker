@@ -14,6 +14,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" android:id="@+id/distance" android:textSize="60dp"
+            app:layout_constraintHorizontal_bias="0.508" app:layout_constraintVertical_bias="0.0"/>
+    <Button
+            android:text="Reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" tools:layout_editor_absoluteY="127dp"
+            tools:layout_editor_absoluteX="148dp" android:id="@+id/reset"/>
 
 </android.support.constraint.ConstraintLayout>
