@@ -17,13 +17,23 @@
             android:textSize="40dp"
     />
     <Button
+            android:id="@+id/reset"
             android:text="Reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/reset"
             android:onClick="onClickReset"
             android:layout_below="@+id/distance"
             android:layout_centerHorizontal="true"
+    />
+    <EditText
+            android:id="@+id/log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:layout_below="@+id/reset"
+            android:layout_centerHorizontal="true"
+            android:enabled="false"
+            android:gravity="center_vertical|center"
     />
 
 </RelativeLayout>
