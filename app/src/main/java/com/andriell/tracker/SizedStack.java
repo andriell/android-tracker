@@ -1,4 +1,4 @@
-package com.example.andriell.tracker;
+package com.andriell.tracker;
 
 import java.util.Stack;
 

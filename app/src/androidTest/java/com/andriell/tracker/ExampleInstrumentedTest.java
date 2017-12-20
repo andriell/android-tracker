@@ -1,4 +1,4 @@
-package com.example.andriell.tracker;
+package com.andriell.tracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.andriell.tracker", appContext.getPackageName());
+        assertEquals("com.andriell.tracker", appContext.getPackageName());
     }
 }
