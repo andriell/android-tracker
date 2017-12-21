@@ -1,17 +1,21 @@
 package com.andriell.tracker;
 
-import android.app.ActivityManager;
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private TrackerService trackerService;
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             trackerService = odometerBinder.getTrackerService();
             bound = true;
         }
+
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             bound = false;
@@ -60,15 +65,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        watchMileage();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            watchMileage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if ( requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            watchMileage();
+        } else {
+            Toast.makeText(this, R.string.error_permission_gps, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        startService(new Intent(this, TrackerService.class));
+        Intent intent = new Intent(this, TrackerService.class);
+        if (Build.VERSION.SDK_INT >= 26) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
         bindService(new Intent(this, TrackerService.class), connection, Context.BIND_AUTO_CREATE);
     }
+
 
     public void onClickStart(View v) {
         startService(new Intent(this, TrackerService.class));

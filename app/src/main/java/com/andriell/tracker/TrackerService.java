@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -51,8 +52,10 @@ public class TrackerService extends Service {
         return Service.START_STICKY;
     }
 
-    //Send custom notification
-    private void sendNotification(String Ticker,String Title,String Text) {
+    private void sendNotification(String ticker, String title, String text) {
+        if (Build.VERSION.SDK_INT >= 26) {
+            return;
+        }
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -64,18 +67,12 @@ public class TrackerService extends Service {
                 .setOngoing(true)   //Can't be swiped out
                 .setSmallIcon(R.mipmap.ic_launcher)
                 //.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.large))   // большая картинка
-                .setTicker(Ticker)
-                .setContentTitle(Title) //Заголовок
-                .setContentText(Text) // Текст уведомления
+                .setTicker(ticker)
+                .setContentTitle(title) //Заголовок
+                .setContentText(text) // Текст уведомления
                 .setWhen(System.currentTimeMillis());
 
-        Notification notification;
-        if (android.os.Build.VERSION.SDK_INT<=15) {
-            notification = builder.getNotification(); // API-15 and lower
-        }else{
-            notification = builder.build();
-        }
-
+        Notification notification = builder.build();
         startForeground(DEFAULT_NOTIFICATION_ID, notification);
     }
 
