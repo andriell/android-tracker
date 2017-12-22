@@ -30,6 +30,18 @@ public class TrackerService extends Service {
 
     public void onDestroy() {
         Toast.makeText(getApplicationContext(), "Service stopped", Toast.LENGTH_SHORT).show();
+        super.onDestroy();
+        restart();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Toast.makeText(getApplicationContext(), "Service removed", Toast.LENGTH_SHORT).show();
+        super.onTaskRemoved(rootIntent);
+        restart();
+    }
+
+    private void restart() {
         if (start) {
             Intent intent = new Intent("com.andriell.tracker.restart");
             intent.putExtra("distance", locationListener.getDistance());
