@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.IBinder;
+import android.widget.Toast;
 
 public class TrackerService extends Service {
     private boolean start = true;
@@ -12,6 +13,7 @@ public class TrackerService extends Service {
 
     @Override
     public void onCreate() {
+        Toast.makeText(getApplicationContext(), "Service created", Toast.LENGTH_SHORT).show();
         super.onCreate();
         LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
@@ -19,13 +21,18 @@ public class TrackerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(getApplicationContext(), "Service started", Toast.LENGTH_SHORT).show();
+        if (intent.hasExtra("distance")) {
+            locationListener.setDistance((Double) intent.getExtras().get("distance"));
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void onDestroy() {
+        Toast.makeText(getApplicationContext(), "Service stopped", Toast.LENGTH_SHORT).show();
         if (start) {
             Intent intent = new Intent("com.andriell.tracker.restart");
-            intent.putExtra("locationListener", locationListener);
+            intent.putExtra("distance", locationListener.getDistance());
             sendBroadcast(intent);
         }
     }
