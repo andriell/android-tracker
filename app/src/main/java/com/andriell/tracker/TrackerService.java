@@ -1,121 +1,61 @@
 package com.andriell.tracker;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TrackerService extends Service {
-    private static final int DEFAULT_NOTIFICATION_ID = 101;
-
-    private final IBinder binder = new TrackerBinder();
-    private final LocationListener locationListener = new TrackerLocationListener();
-    private Location lastLocation = null;
-    private double distance;
-    private SizedStack<String> stack = new SizedStack(10);
-
-    public TrackerService() {
-        super();
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
-        stack.push("onBind");
-        return binder;
+        return null;
     }
 
     @Override
     public void onCreate() {
-        stack.push("onCreate");
-        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+        super.onCreate();
+        mTimer = new Timer();
+        mTimer.schedule(timerTask, 2000, 2 * 1000);
+
     }
 
     @Override
-    public void onDestroy() {
-        stack.push("onDestroy");
-    }
-
     public int onStartCommand(Intent intent, int flags, int startId) {
-        sendNotification("Tracker service started", "Tracker", "Started");
-        return Service.START_STICKY;
-    }
+        try {
 
-    private void sendNotification(String ticker, String title, String text) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            return;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setAction(Intent.ACTION_MAIN);
-        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentIntent(contentIntent)
-                .setOngoing(true)   //Can't be swiped out
-                .setSmallIcon(R.mipmap.ic_launcher)
-                //.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.large))   // большая картинка
-                .setTicker(ticker)
-                .setContentTitle(title) //Заголовок
-                .setContentText(text) // Текст уведомления
-                .setWhen(System.currentTimeMillis());
-
-        Notification notification = builder.build();
-        startForeground(DEFAULT_NOTIFICATION_ID, notification);
+        return super.onStartCommand(intent, flags, startId);
     }
 
-    public double getDistance() {
-        return distance;
-    }
+    private Timer mTimer;
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
-    public SizedStack<String> getStack() {
-        return stack;
-    }
-
-    public class TrackerBinder extends Binder {
-        TrackerService getTrackerService() {
-            return TrackerService.this;
-        }
-    }
-
-    public class TrackerLocationListener implements LocationListener {
-        @Override
-        public void onLocationChanged(Location location) {
-            String s = String.format("%1$,.8f %2$,.8f %3$tT", location.getLongitude(), location.getLatitude(), new Date());
-            stack.push(s);
-            if (lastLocation == null) {
-                lastLocation = location;
-            }
-            distance += location.distanceTo(lastLocation);
-            lastLocation = location;
-        }
+    TimerTask timerTask = new TimerTask() {
 
         @Override
-        public void onProviderDisabled(String arg0) {
+        public void run() {
+            Log.e("Log", "Running");
         }
+    };
 
-        @Override
-        public void onProviderEnabled(String arg0) {
+    public void onDestroy() {
+        try {
+            mTimer.cancel();
+            timerTask.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        Intent intent = new Intent("com.android.techtrainner");
+        //intent.putExtra("yourvalue", "torestore");
+        sendBroadcast(intent);
+    }
 
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle bundle) {
-        }
+    @Override
+    public IBinder onBind(Intent intent) {
+        return new TrackerServiceBinder(this);
     }
 }

@@ -24,6 +24,14 @@
                 android:enabled="true"
                 android:exported="true">
         </service>
+
+        <receiver android:name=".ReceiverCall" >
+            <intent-filter>
+                <action android:name="com.android.techtrainner" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
