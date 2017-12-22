@@ -27,7 +27,7 @@
 
         <receiver android:name=".ReceiverCall" >
             <intent-filter>
-                <action android:name="com.android.techtrainner" />
+                <action android:name="com.andriell.tracker.restart" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>

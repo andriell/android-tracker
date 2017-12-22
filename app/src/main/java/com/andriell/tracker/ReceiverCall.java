@@ -9,6 +9,8 @@ public class ReceiverCall extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("Service Stops", "Ohhhhhhh");
-        context.startService(new Intent(context, TrackerService.class));;
+        Intent intentNew = new Intent(context, TrackerService.class);
+        intentNew.putExtras(intent);
+        context.startService(intentNew);
     }
 }
